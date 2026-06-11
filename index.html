@@ -272,22 +272,26 @@ const SYS_SLIDES = `SparkLabs IR 멘토. VC 관점.
 Fact 규칙: 숫자 있는 수치만. 없으면 missing:확인할것 형식.
 좋은예: growth:반복수주율82% / efficiency:리드타임3주(경쟁사6개월) / defense:전환비용6개월
 
-[SLIDES] 출력. 파이프(|) 구분. 6필드.
-page|type|claim|kpi:fact|interpretation|conclusion
-kpi: growth/efficiency/defense/missing. 없으면 -|-
-claim 20자이내. interpretation 20자이내. conclusion 15자이내.`;
+슬라이드 데이터만 출력. 헤더행 없이. 설명 없이. 다른 텍스트 절대 없이.
+파이프(|) 구분. 정확히 6필드. 한 줄에 슬라이드 하나.
+형식: 숫자|영문타입|핵심주장|kpi타입:팩트값|해석|결론
+kpi타입: growth/efficiency/defense/missing
+예시:
+1|cover|AI 엔드이펙터 선도기업|growth:누적매출40억부채0|3인팀 검증완료|즉시투자가능
+2|problem|기존장비사 커스터마이징 거절|missing:거절비율확인필요|고객선택지없음|시장공백존재`;
 
 // ── 프롬프트 3: DD + VC Objections ──────────────────────
 const SYS_MENTOR = `SparkLabs IR 멘토. [멘토 진단] 있으면 우선 참고.
-아래 두 섹션 출력. 파이프(|) 구분. 다른 텍스트 없이.
+DD 질문과 VC 반박 질문만 생성. 슬라이드 데이터 출력 금지.
 
-[DD_QUESTIONS]
-type|question|slide
-type: concern/verify/process. 8개. 중요도 순.
+먼저 DD_QUESTIONS 8개를 아래 형식으로:
+DD|type|question|slide번호
+type: concern/verify/process
 
-[VC_OBJECTIONS]
-objection|answer
-투자자 날카로운 반박과 권장 답변. 5개.`;
+그 다음 빈 줄 하나 후 VC_OBJECTIONS 5개를:
+VC|투자자반박질문|권장답변
+
+다른 텍스트 없이 위 형식만 출력.`;
 
 const SYS_UPDATE = `SparkLabs IR 멘토.
 기존 슬라이드 데이터(파이프 구분)와 추가 확인 내용으로 업데이트.
@@ -316,7 +320,7 @@ async function apiCall(system, userMsg) {
       'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5',
+      model: 'claude-sonnet-4-5',
       max_tokens: 2500,
       system,
       messages: [{ role: 'user', content: userMsg }],
@@ -348,28 +352,28 @@ function parseKV(text) {
 }
 
 function parsePipeSection(text, section) {
-  const marker = '[' + section + ']';
-  let block = '';
-  const start = text.indexOf(marker);
-  if (start === -1) {
-    // [SLIDES] 헤더 없이 바로 데이터가 오는 경우 전체 텍스트 사용
-    if (section === 'SLIDES') block = text;
-    else return [];
-  } else {
-    const rest = text.slice(start + marker.length);
-    const end = rest.search(/\n\[/);
-    block = (end === -1 ? rest : rest.slice(0, end)).trim();
+  // SLIDES: 숫자로 시작하는 행만
+  if (section === 'SLIDES') {
+    return text.split('\n')
+      .map(l => l.trim())
+      .filter(l => l && l.includes('|') && /^\d+\|/.test(l))
+      .map(l => l.split('|').map(f => f.trim()));
   }
-  return block.split('\n')
-    .map(l => l.trim())
-    .filter(l => {
-      if (!l || !l.includes('|')) return false;
-      const first = l.split('|')[0].trim();
-      // 헤더 행 제거: 순수 영문 소문자만 있는 경우
-      if (/^[a-z_]+$/.test(first)) return false;
-      return true;
-    })
-    .map(l => l.split('|').map(f => f.trim()));
+  // DD_QUESTIONS: DD| 로 시작하는 행
+  if (section === 'DD_QUESTIONS') {
+    return text.split('\n')
+      .map(l => l.trim())
+      .filter(l => l.startsWith('DD|'))
+      .map(l => l.slice(3).split('|').map(f => f.trim()));
+  }
+  // VC_OBJECTIONS: VC| 로 시작하는 행
+  if (section === 'VC_OBJECTIONS') {
+    return text.split('\n')
+      .map(l => l.trim())
+      .filter(l => l.startsWith('VC|'))
+      .map(l => l.slice(3).split('|').map(f => f.trim()));
+  }
+  return [];
 }
 
 async function run() {
