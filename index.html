@@ -349,18 +349,25 @@ function parseKV(text) {
 
 function parsePipeSection(text, section) {
   const marker = '[' + section + ']';
+  let block = '';
   const start = text.indexOf(marker);
-  if (start === -1) return [];
-  const rest = text.slice(start + marker.length);
-  const end = rest.search(/\n\[/);
-  const block = (end === -1 ? rest : rest.slice(0, end)).trim();
+  if (start === -1) {
+    // [SLIDES] 헤더 없이 바로 데이터가 오는 경우 전체 텍스트 사용
+    if (section === 'SLIDES') block = text;
+    else return [];
+  } else {
+    const rest = text.slice(start + marker.length);
+    const end = rest.search(/\n\[/);
+    block = (end === -1 ? rest : rest.slice(0, end)).trim();
+  }
   return block.split('\n')
     .map(l => l.trim())
     .filter(l => {
       if (!l || !l.includes('|')) return false;
-      // 헤더 행만 제거 (첫 필드가 순수 영문 소문자이고 숫자가 없는 경우)
       const first = l.split('|')[0].trim();
-      return /\d/.test(first) || /[가-힣]/.test(first) || first.length === 0 ? true : !/^[a-z_]+$/.test(first);
+      // 헤더 행 제거: 순수 영문 소문자만 있는 경우
+      if (/^[a-z_]+$/.test(first)) return false;
+      return true;
     })
     .map(l => l.split('|').map(f => f.trim()));
 }
@@ -398,9 +405,9 @@ async function run() {
     document.getElementById('loadingMsg').textContent = '슬라이드 설계 중...';
     document.getElementById('loadingSub').textContent = '2/3 — IR Builder';
     const slidesRaw = await apiCall(SYS_SLIDES,
-    console.log("SLIDES_RAW:", slidesRaw);
       ctx + `\n\n[투자논리] ${state.analysis.thesisLabel}`);
-    const _parsed = parsePipeSection(slidesRaw, "SLIDES"); console.log("PARSED_SLIDES:", _parsed); state.slides = _parsed.map((f, i) => {
+    const rawSlides = parsePipeSection(slidesRaw, 'SLIDES');
+    state.slides = rawSlides.map((f, i) => {
       const factParts = (f[3] || '-').split(':');
       return {
         page: parseInt(f[0]) || i+1,
