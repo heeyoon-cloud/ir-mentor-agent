@@ -6,27 +6,13 @@
 <title>IR 멘토링 에이전트 — SparkLabs</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #f7f8fa; color: #1a1a2e;
-    min-height: 100vh; padding: 2rem 1.5rem 4rem;
-  }
-  .container { max-width: 1100px; margin: 0 auto; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f7f8fa; color: #1a1a2e; min-height: 100vh; padding: 2rem 1.5rem 4rem; }
+  .container { max-width: 1080px; margin: 0 auto; }
   label { font-size: 12px; color: #666; display: block; margin-bottom: 4px; }
-  input, select, textarea {
-    width: 100%; padding: 8px 11px; font-size: 13px;
-    border: 1px solid #ddd; border-radius: 8px;
-    background: #fff; color: #1a1a2e; font-family: inherit;
-    outline: none; transition: border-color 0.15s;
-  }
+  input, select, textarea { width: 100%; padding: 8px 11px; font-size: 13px; border: 1px solid #ddd; border-radius: 8px; background: #fff; color: #1a1a2e; font-family: inherit; outline: none; transition: border-color 0.15s; }
   input:focus, select:focus, textarea:focus { border-color: #4a6cf7; }
   textarea { resize: vertical; line-height: 1.6; }
-  button {
-    padding: 9px 22px; font-size: 13px; font-weight: 600;
-    border: none; border-radius: 8px; cursor: pointer;
-    background: #1a1a2e; color: #fff; font-family: inherit;
-    transition: opacity 0.15s;
-  }
+  button { padding: 9px 22px; font-size: 13px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; background: #1a1a2e; color: #fff; font-family: inherit; transition: opacity 0.15s; }
   button:hover { opacity: 0.85; }
   button.secondary { background: #f1f3f4; color: #444; font-weight: 500; }
   button.secondary:hover { background: #e8eaed; opacity: 1; }
@@ -40,11 +26,7 @@
   .page-title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
   .page-sub { font-size: 13px; color: #666; margin-bottom: 1.75rem; line-height: 1.5; }
 
-  .api-bar {
-    background: #fff; border: 1px solid #e8eaed; border-radius: 10px;
-    padding: 0.85rem 1.1rem; margin-bottom: 1.25rem;
-    display: flex; align-items: center; gap: 10px;
-  }
+  .api-bar { background: #fff; border: 1px solid #e8eaed; border-radius: 10px; padding: 0.85rem 1.1rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 10px; }
   .api-bar label { margin: 0; flex-shrink: 0; font-weight: 500; font-size: 12px; color: #555; }
   .api-bar input { flex: 1; margin: 0; font-family: monospace; font-size: 12px; }
   .api-status { font-size: 11px; flex-shrink: 0; }
@@ -52,8 +34,9 @@
   .api-status.no { color: #999; }
 
   .card { background: #fff; border: 1px solid #e8eaed; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
-  .card-title { font-size: 14px; font-weight: 600; margin-bottom: 1rem; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .field { margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
   .error-box { background: #fdecea; border: 1px solid #f5c6c2; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: #c62828; margin-bottom: 12px; }
 
   #loading { display: none; text-align: center; padding: 4rem 0; }
@@ -69,54 +52,88 @@
   .result-header h2 { font-size: 18px; font-weight: 600; }
   .result-meta { font-size: 13px; color: #666; margin-top: 2px; }
 
-  .info-box { background: #fff; border: 1px solid #e8eaed; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.85rem; }
-  .box-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 5px; }
-  .positioning-text { font-size: 15px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; }
-  .story-text { font-size: 13px; color: #555; line-height: 1.7; }
+  .thesis-bar { background: #1a1a2e; color: #fff; border-radius: 10px; padding: 0.9rem 1.25rem; margin-bottom: 0.85rem; }
+  .thesis-bar .tb-label { font-size: 11px; color: #888; margin-bottom: 3px; }
+  .thesis-bar .tb-name { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .thesis-bar .tb-reason { font-size: 12px; color: #bbb; line-height: 1.55; }
 
-  .confirm-banner { background: #fff8e1; border: 1px solid #ffe082; border-radius: 10px; padding: 0.85rem 1.1rem; margin-bottom: 0.85rem; }
-  .confirm-banner .banner-title { font-size: 12px; font-weight: 600; color: #e65100; margin-bottom: 6px; }
-  .confirm-item { font-size: 12px; color: #bf360c; margin-bottom: 3px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0.85rem; }
+  .info-box { background: #fff; border: 1px solid #e8eaed; border-radius: 10px; padding: 1rem 1.25rem; }
+  .box-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+  .why-item { font-size: 13px; color: #444; margin-bottom: 5px; display: flex; gap: 6px; line-height: 1.5; }
+  .why-dot { color: #4a6cf7; flex-shrink: 0; font-weight: 600; }
+  .concern-item { font-size: 13px; color: #444; margin-bottom: 5px; display: flex; gap: 6px; line-height: 1.5; }
+  .concern-num { color: #c62828; flex-shrink: 0; font-weight: 600; min-width: 14px; }
 
-  .table-wrap { background: #fff; border: 1px solid #e8eaed; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; overflow-x: auto; }
+  /* 탭 */
+  .tab-bar { display: flex; gap: 4px; margin-bottom: 0; border-bottom: 2px solid #e8eaed; }
+  .tab-btn { padding: 8px 18px; font-size: 13px; font-weight: 500; border: none; background: transparent; cursor: pointer; color: #888; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color 0.15s; font-family: inherit; }
+  .tab-btn:hover { color: #444; opacity: 1; }
+  .tab-btn.active { color: #1a1a2e; border-bottom-color: #1a1a2e; font-weight: 600; }
+  .tab-panel { display: none; padding-top: 1rem; }
+  .tab-panel.active { display: block; }
+
+  /* IR Builder 표 */
+  .table-wrap { background: #fff; border: 1px solid #e8eaed; border-radius: 12px; overflow: hidden; margin-bottom: 0.85rem; overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   thead tr { background: #1a1a2e; }
-  thead th { padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 600; color: #fff; letter-spacing: 0.05em; white-space: nowrap; }
+  thead th { padding: 9px 12px; text-align: left; font-size: 11px; font-weight: 600; color: #fff; letter-spacing: 0.05em; white-space: nowrap; }
   tbody tr { border-bottom: 1px solid #f1f3f4; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: #fafbfc; }
-  tbody tr.has-confirm { background: #fffde7; }
-  tbody tr.has-confirm:hover { background: #fff8e1; }
-  td { padding: 10px 12px; vertical-align: top; line-height: 1.55; }
-  td.pg { font-size: 11px; color: #aaa; font-weight: 600; width: 32px; white-space: nowrap; }
-  td.section { width: 80px; }
-  .sec-tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
-  td.headline { min-width: 180px; font-weight: 500; color: #1a1a2e; }
-  td.facts { min-width: 140px; color: #444; font-size: 12px; }
-  td.reframe { min-width: 140px; }
-  td.confirm-col { min-width: 130px; }
-  .fact-item { display: flex; gap: 5px; margin-bottom: 2px; }
-  .fact-dot { color: #ccc; flex-shrink: 0; }
-  .reframe-text { font-size: 12px; color: #1a56db; background: #e8f0fe; border-radius: 4px; padding: 4px 7px; line-height: 1.5; display: block; }
-  .confirm-text { font-size: 12px; color: #e65100; background: #fff8e1; border-radius: 4px; padding: 4px 7px; line-height: 1.5; display: block; }
-  .empty-cell { color: #ddd; font-size: 12px; }
+  td { padding: 9px 12px; vertical-align: top; line-height: 1.55; }
+  td.pg { font-size: 11px; color: #aaa; font-weight: 600; width: 28px; white-space: nowrap; }
+  td.sec { width: 70px; }
+  .sec-tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+  td.claim { min-width: 150px; font-weight: 500; color: #1a1a2e; }
+  td.fact-col { min-width: 140px; }
+  td.interp { min-width: 120px; font-size: 12px; color: #555; }
+  td.concl { min-width: 110px; }
+  .concl-text { color: #166534; background: #e6f4ea; border-radius: 4px; padding: 3px 7px; display: inline-block; font-size: 12px; }
+  .empty { color: #ddd; }
 
-  .update-card { background: #fff; border: 1px solid #e8eaed; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+  /* Fact KPI 배지 */
+  .fact-item { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 4px; }
+  .kpi-badge { font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+  .kpi-growth  { background: #e8f5e9; color: #2e7d32; }
+  .kpi-eff     { background: #e8f0fe; color: #1a56db; }
+  .kpi-defense { background: #fce8dc; color: #c25e00; }
+  .kpi-missing { background: #fdecea; color: #c62828; }
+  .fact-val { font-size: 12px; color: #1a1a2e; line-height: 1.5; }
+  .fact-val.missing { color: #c62828; font-style: italic; }
+
+  /* DD / VC Objections 탭 */
+  .mentor-section-title { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.06em; margin: 1.25rem 0 0.5rem; }
+  .mentor-section-title:first-child { margin-top: 0; }
+
+  .q-card { background: #fff; border: 1px solid #e8eaed; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 8px; display: flex; gap: 10px; align-items: flex-start; }
+  .q-card:hover { border-color: #c5cae9; }
+  .q-badge { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+  .q-concern  { background: #fdecea; color: #c62828; }
+  .q-verify   { background: #fff8e1; color: #e65100; }
+  .q-investor { background: #e8f0fe; color: #1a56db; }
+  .q-text { font-size: 13px; color: #333; line-height: 1.55; flex: 1; }
+  .q-slide { font-size: 11px; color: #aaa; flex-shrink: 0; margin-top: 2px; }
+
+  .obj-card { background: #fff; border: 1px solid #e8eaed; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 8px; }
+  .obj-card:hover { border-color: #c5cae9; }
+  .obj-q { font-size: 13px; font-weight: 500; color: #c62828; margin-bottom: 5px; }
+  .obj-a { font-size: 13px; color: #333; line-height: 1.55; }
+
+  .update-card { background: #fff; border: 1px solid #e8eaed; border-radius: 12px; padding: 1.25rem 1.5rem; margin-top: 1.25rem; }
   .update-desc { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 12px; }
   .update-actions { display: flex; gap: 8px; margin-top: 10px; }
 </style>
 </head>
 <body>
 <div class="container">
-
   <div class="top-nav">
     <a href="../">SparkLabs Tools</a>
     <span class="sep">›</span>
     <span class="current">IR 멘토링 에이전트</span>
   </div>
-
   <div class="page-title">IR 멘토링 에이전트</div>
-  <div class="page-sub">기업 설문 + KPI 노트 → 20페이지 핵심 메시지 & 스토리라인 표<br>멘토링 세션 중 추가 확인 내용을 반영해 업데이트할 수 있습니다.</div>
+  <div class="page-sub">설문 붙여넣기 → 투자 논리 기반 IR 설계 자동 생성</div>
 
   <div class="api-bar">
     <label for="apiKey">Anthropic API Key</label>
@@ -126,10 +143,8 @@
 
   <div id="inputSection">
     <div class="card">
-      <div class="card-title">기업 정보</div>
-      <div class="grid-3">
+      <div class="grid-2">
         <div><label>기업명 *</label><input type="text" id="company" placeholder="예: 서프라이스"></div>
-        <div><label>담당 멘토</label><input type="text" id="mentor" placeholder="예: 이희윤"></div>
         <div><label>투자 단계</label>
           <select id="stage">
             <option>Pre-Seed</option><option>Seed</option>
@@ -138,17 +153,17 @@
           </select>
         </div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-title">기업 설문 답변 *</div>
-      <textarea id="survey" rows="8" placeholder="설문지 답변 전체를 그대로 붙여넣으세요."></textarea>
-    </div>
-    <div class="card">
-      <div class="card-title">멘토 KPI 노트 & 코멘트</div>
-      <textarea id="kpiNote" rows="6" placeholder="사전진단 미팅 메모, KPI 세팅 내용, 핵심 인사이트 등"></textarea>
+      <div class="field">
+        <label>기업 설문 답변 * <span style="font-weight:400;color:#aaa">(원문 그대로)</span></label>
+        <textarea id="survey" rows="7" placeholder="설문지 답변 전체를 그대로 붙여넣으세요."></textarea>
+      </div>
+      <div class="field">
+        <label>멘토 진단 메모 <span style="font-weight:400;color:#aaa">(사전진단·KPI 세션 내용 — 설문보다 우선 반영)</span></label>
+        <textarea id="mentorMemo" rows="5" placeholder="예:&#10;- 핵심 해자는 고객사 프로젝트 선점 능력 (설문엔 빠져있음)&#10;- 수율 +3~4%, 택타임 20배 단축 수치 IR에 반드시 포함&#10;- 베트남 진출은 기존 고객사 이전 요구로 Pull 방식"></textarea>
+      </div>
     </div>
     <div id="inputError" class="error-box" style="display:none"></div>
-    <button onclick="runStage1()">핵심 메시지 & 스토리라인 생성 →</button>
+    <button onclick="run()">IR 설계 생성 →</button>
   </div>
 
   <div id="loading">
@@ -166,94 +181,119 @@
       </div>
       <button class="secondary" onclick="resetAll()">← 처음으로</button>
     </div>
-    <div class="info-box">
-      <div class="box-label">투자자 언어 포지셔닝</div>
-      <div class="positioning-text" id="positioningText"></div>
-      <div class="box-label" style="margin-top:10px">스토리라인 흐름</div>
-      <div class="story-text" id="storyFlow"></div>
-    </div>
-    <div id="confirmBanner"></div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>P</th><th>섹션</th><th>핵심 메시지</th>
-            <th>포함할 팩트</th><th>리프레이밍</th><th>세션 확인</th>
-          </tr>
-        </thead>
-        <tbody id="slideTable"></tbody>
-      </table>
-    </div>
-    <div class="update-card">
-      <div class="card-title">멘토링 세션 추가 확인 내용 반영</div>
-      <div class="update-desc">세션 중 확인된 사항, 수정된 수치, 포지셔닝 변경 등을 입력하면 표가 업데이트됩니다.</div>
-      <textarea id="addNote" rows="5" placeholder="예:&#10;- 2025년 매출은 11.4억원으로 최종 확정&#10;- 스타필드 하남 계약은 협의 중 (확정 아님)&#10;- 포지셔닝을 포맷 라이선서로 확정"></textarea>
-      <div id="updateError" class="error-box" style="display:none; margin-top:8px"></div>
-      <div class="update-actions">
-        <button class="accent" onclick="runStage2()">표 업데이트 →</button>
+
+    <div class="thesis-bar" id="thesisBar"></div>
+
+    <div class="two-col">
+      <div class="info-box">
+        <div class="box-label">Why Now — 시장 타이밍</div>
+        <div id="whyNowList"></div>
+      </div>
+      <div class="info-box">
+        <div class="box-label">Top 5 Investor Concerns</div>
+        <div id="concernList"></div>
       </div>
     </div>
-  </div>
 
+    <!-- 탭 -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('ir')">IR Builder</button>
+      <button class="tab-btn" onclick="switchTab('dd')">DD Questions</button>
+      <button class="tab-btn" onclick="switchTab('obj')">VC Objections</button>
+    </div>
+
+    <!-- IR Builder 탭 -->
+    <div class="tab-panel active" id="tab-ir">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>P</th><th>섹션</th><th>핵심 주장</th><th>Fact (KPI)</th><th>Interpretation</th><th>Investor Conclusion</th></tr>
+          </thead>
+          <tbody id="irTable"></tbody>
+        </table>
+      </div>
+      <div class="update-card">
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px">세션 확인 내용 반영</div>
+        <div class="update-desc">멘토링 세션 중 확인된 사항을 입력하면 IR Builder가 업데이트됩니다.</div>
+        <textarea id="addNote" rows="4" placeholder="예:&#10;- 반복 수주율 82% 확인&#10;- UR+ 인증 2026년 Q2 완료 예정&#10;- 리드타임 3주 (경쟁사 6개월)"></textarea>
+        <div id="updateError" class="error-box" style="display:none;margin-top:8px"></div>
+        <div class="update-actions">
+          <button class="accent" onclick="runUpdate()">표 업데이트 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DD Questions 탭 -->
+    <div class="tab-panel" id="tab-dd">
+      <div id="ddContent"></div>
+    </div>
+
+    <!-- VC Objections 탭 -->
+    <div class="tab-panel" id="tab-obj">
+      <div id="objContent"></div>
+    </div>
+  </div>
 </div>
+
 <script>
 const SLIDE_TAGS = {
-  cover:{label:"표지",color:"#1A2F4E"},
-  exec_summary:{label:"핵심요약",color:"#1A2F4E"},
-  problem:{label:"문제정의",color:"#B91C1C"},
-  solution:{label:"솔루션",color:"#1565C0"},
-  customer_roi:{label:"고객ROI",color:"#1565C0"},
-  technology:{label:"기술차별화",color:"#6D28D9"},
-  market_size:{label:"시장규모",color:"#0F766E"},
-  competitive:{label:"경쟁분석",color:"#0F766E"},
-  moat:{label:"핵심해자",color:"#6D28D9"},
-  traction:{label:"실적증명",color:"#166534"},
-  biz_model:{label:"BM",color:"#1565C0"},
-  revenue:{label:"매출",color:"#166534"},
-  gtm:{label:"GTM",color:"#0F766E"},
-  global_1:{label:"해외①",color:"#0F766E"},
-  global_2:{label:"해외②",color:"#0F766E"},
-  roadmap:{label:"로드맵",color:"#1565C0"},
-  use_of_funds:{label:"투자금",color:"#B91C1C"},
-  team:{label:"팀",color:"#1A2F4E"},
-  milestones:{label:"마일스톤",color:"#166534"},
+  cover:{label:"표지",color:"#1A2F4E"},exec_summary:{label:"핵심요약",color:"#1A2F4E"},
+  problem:{label:"문제",color:"#B91C1C"},solution:{label:"솔루션",color:"#1565C0"},
+  customer_roi:{label:"고객ROI",color:"#1565C0"},technology:{label:"기술",color:"#6D28D9"},
+  market:{label:"시장",color:"#0F766E"},competitive:{label:"경쟁",color:"#0F766E"},
+  moat:{label:"해자",color:"#6D28D9"},traction:{label:"실적",color:"#166534"},
+  biz_model:{label:"BM",color:"#1565C0"},revenue:{label:"매출",color:"#166534"},
+  gtm:{label:"GTM",color:"#0F766E"},global:{label:"글로벌",color:"#0F766E"},
+  roadmap:{label:"로드맵",color:"#1565C0"},use_of_funds:{label:"투자금",color:"#B91C1C"},
+  team:{label:"팀",color:"#1A2F4E"},milestones:{label:"마일스톤",color:"#166534"},
   ask:{label:"TheAsk",color:"#B91C1C"},
 };
 
-// 슬라이드 타입 순서
-const SLIDE_TYPES = [
-  "cover","exec_summary","problem","solution","customer_roi",
-  "technology","market_size","competitive","moat","traction",
-  "biz_model","revenue","gtm","global_1","global_2",
-  "roadmap","use_of_funds","team","milestones","ask"
-];
+// ── 프롬프트 1: 분석 ─────────────────────────────────────
+const SYS_ANALYSIS = `당신은 VC 투자자 관점의 SparkLabs G-ROUND IR 멘토.
+[기업 설문]은 기업 작성 원문으로 과장이 많음. [멘토 진단]이 있으면 우선 신뢰하고 충돌 시 멘토 진단을 따름.
+가장 강한 투자 논리를 판단해 아래 형식으로만 출력. 다른 텍스트 절대 없이. 파이프(|) 사용 금지.
 
-// ── 프롬프트: 파이프 구분자 형식 ──────────────────────────────
-const SYS_META = `SparkLabs G-ROUND IR 멘토.
-기업 설문과 KPI 노트를 분석해 아래 형식으로만 응답하라. 다른 텍스트 없이.
+THESIS_LABEL: 투자 논리 이름 15자 이내
+THESIS_REASON: 이 논리를 선택한 이유 2문장
+WHY_NOW_1: 구조적 시장 변화 근거 (트렌드/정책/기술)
+WHY_NOW_2: 구조적 시장 변화 근거
+WHY_NOW_3: 구조적 시장 변화 근거
+CONCERN_1: 투자자 우려 가장 핵심 (사업모델/경쟁/팀)
+CONCERN_2: 투자자 우려
+CONCERN_3: 투자자 우려
+CONCERN_4: 투자자 우려
+CONCERN_5: 투자자 우려`;
 
-POSITIONING: 투자자 언어 한줄 포지셔닝 (파이프 문자 사용 금지)
-STORY: 스토리라인 흐름 2~3문장 (파이프 문자 사용 금지)`;
+// ── 프롬프트 2: IR 슬라이드 ─────────────────────────────
+const SYS_SLIDES = `SparkLabs IR 멘토. VC 관점.
+[멘토 진단] 있으면 우선. 투자 논리 증명 순서로 배치. 10~12장. 문제→솔루션 직접 연결.
 
-const SYS_SLIDES = `SparkLabs G-ROUND IR 멘토.
-기업 설문과 KPI 노트를 분석해 지정된 슬라이드 타입별 핵심 메시지를 아래 형식으로만 출력하라.
-한 줄에 슬라이드 하나. 파이프(|)로 구분. 다른 텍스트나 설명 없이 데이터만.
+Fact 규칙: 숫자 있는 수치만. 없으면 missing:확인할것 형식.
+좋은예: growth:반복수주율82% / efficiency:리드타임3주(경쟁사6개월) / defense:전환비용6개월
 
-형식 (정확히 6개 필드):
-page|type|title|headline|facts|reframe|confirm
+[SLIDES] 출력. 파이프(|) 구분. 6필드.
+page|type|claim|kpi:fact|interpretation|conclusion
+kpi: growth/efficiency/defense/missing. 없으면 -|-
+claim 20자이내. interpretation 20자이내. conclusion 15자이내.`;
 
-규칙:
-- headline: 투자자가 30초 안에 납득할 핵심 메시지 1문장
-- facts: 포함할 팩트 2개를 슬래시(/)로 구분. 없으면 -
-- reframe: 설문 원문을 투자자 언어로 바꾼 포인트 1문장. 없으면 -
-- confirm: 세션 중 기업에게 확인할 사항. 없으면 -
-- 모든 필드에서 파이프(|) 문자 절대 사용 금지`;
+// ── 프롬프트 3: DD + VC Objections ──────────────────────
+const SYS_MENTOR = `SparkLabs IR 멘토. [멘토 진단] 있으면 우선 참고.
+아래 두 섹션 출력. 파이프(|) 구분. 다른 텍스트 없이.
+
+[DD_QUESTIONS]
+type|question|slide
+type: concern/verify/process. 8개. 중요도 순.
+
+[VC_OBJECTIONS]
+objection|answer
+투자자 날카로운 반박과 권장 답변. 5개.`;
 
 const SYS_UPDATE = `SparkLabs IR 멘토.
-기존 슬라이드 데이터(파이프 구분 형식)와 추가 확인 내용을 받아 업데이트된 슬라이드 데이터를 동일한 형식으로 출력하라.
-해소된 confirm은 -로 변경. 다른 텍스트 없이 데이터만.`;
+기존 슬라이드 데이터(파이프 구분)와 추가 확인 내용으로 업데이트.
+[SLIDES] 헤더 포함. 다른 텍스트 없이.`;
 
-let currentResult = null;
+let state = { company:'', stage:'', slides:[], ddQs:[], objections:[], analysis:{} };
 
 function onApiKeyChange() {
   const key = document.getElementById('apiKey').value.trim();
@@ -276,8 +316,8 @@ async function apiCall(system, userMsg) {
       'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 4000,
+      model: 'claude-haiku-4-5',
+      max_tokens: 2500,
       system,
       messages: [{ role: 'user', content: userMsg }],
     }),
@@ -285,40 +325,6 @@ async function apiCall(system, userMsg) {
   const data = await res.json();
   if (data.error) throw new Error(data.error.message || 'API 오류');
   return (data.content || []).map(b => b.text || '').join('').trim();
-}
-
-// 파이프 텍스트 → 슬라이드 배열 파싱
-function parseSlides(text) {
-  return text.split('\n')
-    .map(line => line.trim())
-    .filter(line => line && line.includes('|'))
-    .map(line => {
-      const parts = line.split('|');
-      return {
-        page:     parseInt(parts[0]) || 0,
-        type:     (parts[1] || '').trim(),
-        title:    (parts[2] || '').trim(),
-        headline: (parts[3] || '').trim(),
-        facts:    (parts[4] || '-').trim(),
-        reframe:  (parts[5] || '-').trim(),
-        confirm:  (parts[6] || '-').trim(),
-      };
-    })
-    .filter(s => s.page > 0);
-}
-
-// 슬라이드 배열 → 파이프 텍스트
-function slidesToText(slides) {
-  return slides.map(s =>
-    `${s.page}|${s.type}|${s.title}|${s.headline}|${s.facts}|${s.reframe}|${s.confirm}`
-  ).join('\n');
-}
-
-// 메타 텍스트 파싱
-function parseMeta(text) {
-  const pos = text.match(/POSITIONING:\s*(.+)/)?.[1]?.trim() || '';
-  const story = text.match(/STORY:\s*(.+)/)?.[1]?.trim() || '';
-  return { positioning: pos, story_flow: story };
 }
 
 function setLoading(on, msg='', sub='') {
@@ -332,53 +338,89 @@ function setLoading(on, msg='', sub='') {
   }
 }
 
-async function runStage1() {
-  const company = document.getElementById('company').value.trim();
-  const mentor  = document.getElementById('mentor').value.trim();
-  const stage   = document.getElementById('stage').value;
-  const survey  = document.getElementById('survey').value.trim();
-  const kpiNote = document.getElementById('kpiNote').value.trim();
-  const errBox  = document.getElementById('inputError');
+function parseKV(text) {
+  const map = {};
+  text.split('\n').forEach(line => {
+    const idx = line.indexOf(':');
+    if (idx > 0) map[line.slice(0,idx).trim()] = line.slice(idx+1).trim();
+  });
+  return map;
+}
+
+function parsePipeSection(text, section) {
+  const marker = '[' + section + ']';
+  const start = text.indexOf(marker);
+  if (start === -1) return [];
+  const rest = text.slice(start + marker.length);
+  const end = rest.search(/\n\[/);
+  const block = (end === -1 ? rest : rest.slice(0, end)).trim();
+  return block.split('\n')
+    .map(l => l.trim())
+    .filter(l => l && l.includes('|') && !l.match(/^[a-z_]+\|[a-z_]+/))
+    .map(l => l.split('|').map(f => f.trim()));
+}
+
+async function run() {
+  const company    = document.getElementById('company').value.trim();
+  const stage      = document.getElementById('stage').value;
+  const survey     = document.getElementById('survey').value.trim();
+  const mentorMemo = document.getElementById('mentorMemo').value.trim();
+  const errBox     = document.getElementById('inputError');
   if (!getApiKey()) { showErr(errBox, 'API 키를 입력해주세요.'); return; }
   if (!company)     { showErr(errBox, '기업명을 입력해주세요.'); return; }
   if (!survey)      { showErr(errBox, '설문 답변을 입력해주세요.'); return; }
   errBox.style.display = 'none';
+  state.company = company; state.stage = stage;
 
-  const context = `[기업] ${company} / ${stage} / 멘토:${mentor||'미입력'}\n[설문]\n${survey}\n[KPI노트]\n${kpiNote||'없음'}`;
+  const ctx = `[기업] ${company} / ${stage}\n\n[기업 설문]\n${survey}${mentorMemo ? '\n\n[멘토 진단]\n' + mentorMemo : ''}`;
 
-  setLoading(true, '포지셔닝 & 스토리라인 분석 중...', '1/3 단계');
+  setLoading(true, '투자 논리 분석 중...', '1/3 — VC 관점 분석');
   setProgress(10);
 
   try {
-    // 1) 메타
-    const metaText = await apiCall(SYS_META, context);
-    const meta = parseMeta(metaText);
-    setProgress(30);
+    // 1) 분석
+    const analysisRaw = await apiCall(SYS_ANALYSIS, ctx);
+    const kv = parseKV(analysisRaw);
+    state.analysis = {
+      thesisLabel: kv['THESIS_LABEL'] || '',
+      thesisReason: kv['THESIS_REASON'] || '',
+      whyNow: [kv['WHY_NOW_1'], kv['WHY_NOW_2'], kv['WHY_NOW_3']].filter(Boolean),
+      concerns: [kv['CONCERN_1'],kv['CONCERN_2'],kv['CONCERN_3'],kv['CONCERN_4'],kv['CONCERN_5']].filter(Boolean),
+    };
+    setProgress(38);
 
-    // 2) 슬라이드 1~10
-    document.getElementById('loadingMsg').textContent = '슬라이드 1~10 구성 중...';
-    document.getElementById('loadingSub').textContent = '2/3 단계';
-    const typesA = SLIDE_TYPES.slice(0, 10);
-    const promptA = `${context}\n\n아래 순서대로 10개 슬라이드를 page 1~10으로 생성:\n${typesA.map((t,i)=>`${i+1}|${t}`).join('\n')}`;
-    const textA = await apiCall(SYS_SLIDES, promptA);
-    const slidesA = parseSlides(textA);
-    setProgress(65);
+    // 2) 슬라이드
+    document.getElementById('loadingMsg').textContent = '슬라이드 설계 중...';
+    document.getElementById('loadingSub').textContent = '2/3 — IR Builder';
+    const slidesRaw = await apiCall(SYS_SLIDES,
+      ctx + `\n\n[투자논리] ${state.analysis.thesisLabel}`);
+    state.slides = parsePipeSection(slidesRaw, 'SLIDES').map((f, i) => {
+      const factParts = (f[3] || '-').split(':');
+      return {
+        page: parseInt(f[0]) || i+1,
+        type: f[1] || 'cover',
+        claim: f[2] || '',
+        kpiType: factParts[0] || '-',
+        factVal: factParts.slice(1).join(':').trim() || (f[3] || '-'),
+        interp: f[4] || '-',
+        conclusion: f[5] || '-',
+      };
+    }).filter(s => s.claim);
+    setProgress(68);
 
-    // 3) 슬라이드 11~20
-    document.getElementById('loadingMsg').textContent = '슬라이드 11~20 구성 중...';
-    document.getElementById('loadingSub').textContent = '3/3 단계';
-    const typesB = SLIDE_TYPES.slice(10);
-    const promptB = `${context}\n\n아래 순서대로 10개 슬라이드를 page 11~20으로 생성:\n${typesB.map((t,i)=>`${i+11}|${t}`).join('\n')}`;
-    const textB = await apiCall(SYS_SLIDES, promptB);
-    const slidesB = parseSlides(textB);
+    // 3) DD + Objections
+    document.getElementById('loadingMsg').textContent = 'DD 질문 & VC Objections 생성 중...';
+    document.getElementById('loadingSub').textContent = '3/3 — Mentor Mode';
+    const mentorRaw = await apiCall(SYS_MENTOR,
+      ctx + `\n\n[투자논리] ${state.analysis.thesisLabel}\n[슬라이드수] ${state.slides.length}`);
+    state.ddQs = parsePipeSection(mentorRaw, 'DD_QUESTIONS').map(f => ({
+      type: f[0] || 'verify', question: f[1] || '', slide: f[2] || '-',
+    })).filter(q => q.question);
+    state.objections = parsePipeSection(mentorRaw, 'VC_OBJECTIONS').map(f => ({
+      objection: f[0] || '', answer: f[1] || '',
+    })).filter(o => o.objection);
     setProgress(95);
 
-    currentResult = {
-      company, stage, mentor: mentor || '미입력',
-      positioning: meta.positioning,
-      story_flow: meta.story_flow,
-      slides: [...slidesA, ...slidesB],
-    };
     renderResult();
   } catch(e) {
     setLoading(false);
@@ -387,23 +429,108 @@ async function runStage1() {
   }
 }
 
-async function runStage2() {
+function renderResult() {
+  setLoading(false);
+  document.getElementById('inputSection').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  const a = state.analysis;
+
+  document.getElementById('resultTitle').textContent = state.company;
+  document.getElementById('resultMeta').textContent = `${state.stage} · ${state.slides.length}P`;
+
+  document.getElementById('thesisBar').innerHTML = `
+    <div class="tb-label">선택된 투자 논리</div>
+    <div class="tb-name">${a.thesisLabel}</div>
+    <div class="tb-reason">${a.thesisReason}</div>`;
+
+  document.getElementById('whyNowList').innerHTML = a.whyNow.map(w =>
+    `<div class="why-item"><span class="why-dot">→</span><span>${w}</span></div>`).join('');
+  document.getElementById('concernList').innerHTML = a.concerns.map((c,i) =>
+    `<div class="concern-item"><span class="concern-num">${i+1}</span><span>${c}</span></div>`).join('');
+
+  // KPI 배지 매핑
+  const kpiMap = {
+    growth:    { label:'성장',   cls:'kpi-growth' },
+    efficiency:{ label:'효율',   cls:'kpi-eff' },
+    defense:   { label:'방어력', cls:'kpi-defense' },
+    missing:   { label:'확인필요', cls:'kpi-missing' },
+  };
+
+  document.getElementById('irTable').innerHTML = state.slides.map(s => {
+    const tag = SLIDE_TAGS[s.type] || { label: s.type, color: '#555' };
+    const bg = tag.color + '18';
+    const kpi = kpiMap[s.kpiType] || null;
+    const factHtml = s.factVal && s.factVal !== '-'
+      ? `<div class="fact-item">
+          ${kpi ? `<span class="kpi-badge ${kpi.cls}">${kpi.label}</span>` : ''}
+          <span class="fact-val ${s.kpiType==='missing'?'missing':''}">${s.factVal}</span>
+        </div>`
+      : `<span class="empty">—</span>`;
+    return `<tr>
+      <td class="pg">${s.page}</td>
+      <td class="sec"><span class="sec-tag" style="background:${bg};color:${tag.color}">${tag.label}</span></td>
+      <td class="claim">${s.claim}</td>
+      <td class="fact-col">${factHtml}</td>
+      <td class="interp">${s.interp!=='-'?s.interp:'<span class="empty">—</span>'}</td>
+      <td class="concl">${s.conclusion!=='-'?`<span class="concl-text">${s.conclusion}</span>`:'<span class="empty">—</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  // DD Questions
+  const ddTypeMap = {
+    concern: { label:'핵심리스크', cls:'q-concern' },
+    verify:  { label:'수치확인',   cls:'q-verify' },
+    process: { label:'프로세스',   cls:'q-investor' },
+  };
+  const ddByType = { concern: [], verify: [], process: [] };
+  state.ddQs.forEach(q => { (ddByType[q.type] || ddByType.verify).push(q); });
+  let ddHtml = '';
+  [['concern','핵심 리스크 검증'],['verify','수치 & 팩트 확인'],['process','프로세스 이해']].forEach(([type, title]) => {
+    if (!ddByType[type].length) return;
+    ddHtml += `<div class="mentor-section-title">${title}</div>`;
+    ddByType[type].forEach(q => {
+      const qt = ddTypeMap[q.type] || ddTypeMap.verify;
+      ddHtml += `<div class="q-card">
+        <span class="q-badge ${qt.cls}">${qt.label}</span>
+        <span class="q-text">${q.question}</span>
+        ${q.slide!=='-'?`<span class="q-slide">P.${q.slide}</span>`:''}
+      </div>`;
+    });
+  });
+  document.getElementById('ddContent').innerHTML = ddHtml || '<p style="color:#aaa;font-size:13px">질문 데이터가 없습니다.</p>';
+
+  // VC Objections
+  document.getElementById('objContent').innerHTML = state.objections.map(o => `
+    <div class="obj-card">
+      <div class="obj-q">Q. ${o.objection}</div>
+      <div class="obj-a">→ ${o.answer}</div>
+    </div>`).join('') || '<p style="color:#aaa;font-size:13px">데이터가 없습니다.</p>';
+}
+
+async function runUpdate() {
   const addNote = document.getElementById('addNote').value.trim();
   const errBox  = document.getElementById('updateError');
   if (!addNote) return;
   errBox.style.display = 'none';
   document.getElementById('result').style.display = 'none';
-  setLoading(true, '업데이트 중...', '추가 내용 반영 중');
-  setProgress(30);
+  setLoading(true, '업데이트 중...', '확인 내용 반영 중');
+  setProgress(40);
 
+  const slidesText = state.slides.map(s =>
+    `${s.page}|${s.type}|${s.claim}|${s.kpiType}:${s.factVal}|${s.interp}|${s.conclusion}`).join('\n');
   try {
-    const slidesText = slidesToText(currentResult.slides);
-    const userMsg = `[기존 슬라이드 데이터]\n${slidesText}\n\n[추가 확인 내용]\n${addNote}`;
-    const updatedText = await apiCall(SYS_UPDATE, userMsg);
-    const updatedSlides = parseSlides(updatedText);
-    setProgress(90);
-    if (updatedSlides.length > 0) currentResult.slides = updatedSlides;
+    const raw = await apiCall(SYS_UPDATE,
+      `[기존슬라이드]\n${slidesText}\n\n[추가확인]\n${addNote}`);
+    const block = raw.includes('[SLIDES]') ? raw : '[SLIDES]\n' + raw;
+    const updated = parsePipeSection(block, 'SLIDES').map((f,i) => {
+      const fp = (f[3]||'-').split(':');
+      return { page:parseInt(f[0])||i+1, type:f[1]||'', claim:f[2]||'',
+        kpiType:fp[0]||'-', factVal:fp.slice(1).join(':').trim()||(f[3]||'-'),
+        interp:f[4]||'-', conclusion:f[5]||'-' };
+    }).filter(s => s.claim);
+    if (updated.length > 0) state.slides = updated;
     document.getElementById('addNote').value = '';
+    setProgress(95);
     renderResult();
   } catch(e) {
     setLoading(false);
@@ -412,58 +539,20 @@ async function runStage2() {
   }
 }
 
-function renderResult() {
-  setLoading(false);
-  document.getElementById('inputSection').style.display = 'none';
-  document.getElementById('result').style.display = 'block';
-  const r = currentResult;
-  const slides = r.slides || [];
-
-  document.getElementById('resultTitle').textContent = r.company;
-  document.getElementById('resultMeta').textContent = `${r.stage} · ${r.mentor} · ${slides.length}P`;
-  document.getElementById('positioningText').textContent = r.positioning;
-  document.getElementById('storyFlow').textContent = r.story_flow;
-
-  const confirmList = slides.filter(s => s.confirm && s.confirm !== '-');
-  document.getElementById('confirmBanner').innerHTML = confirmList.length > 0 ? `
-    <div class="confirm-banner">
-      <div class="banner-title">세션 중 확인 필요 ${confirmList.length}건</div>
-      ${confirmList.map(s=>`<div class="confirm-item"><strong>P.${s.page} ${s.title}</strong> — ${s.confirm}</div>`).join('')}
-    </div>` : '';
-
-  document.getElementById('slideTable').innerHTML = slides.map(s => {
-    const tag = SLIDE_TAGS[s.type] || { label: s.type, color: '#555' };
-    const tagBg = tag.color + '18';
-    const hasConfirm = s.confirm && s.confirm !== '-';
-
-    const factsHtml = (s.facts && s.facts !== '-')
-      ? s.facts.split('/').map(f => `<div class="fact-item"><span class="fact-dot">·</span><span>${f.trim()}</span></div>`).join('')
-      : `<span class="empty-cell">—</span>`;
-
-    const reframeHtml = (s.reframe && s.reframe !== '-')
-      ? `<span class="reframe-text">${s.reframe}</span>`
-      : `<span class="empty-cell">—</span>`;
-
-    const confirmHtml = hasConfirm
-      ? `<span class="confirm-text">${s.confirm}</span>`
-      : `<span class="empty-cell">—</span>`;
-
-    return `<tr class="${hasConfirm ? 'has-confirm' : ''}">
-      <td class="pg">${s.page}</td>
-      <td class="section"><span class="sec-tag" style="background:${tagBg};color:${tag.color}">${tag.label}</span></td>
-      <td class="headline">${s.headline}</td>
-      <td class="facts">${factsHtml}</td>
-      <td class="reframe">${reframeHtml}</td>
-      <td class="confirm-col">${confirmHtml}</td>
-    </tr>`;
-  }).join('');
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    const names = ['ir','dd','obj'];
+    b.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
 }
 
 function resetAll() {
-  currentResult = null;
   document.getElementById('result').style.display = 'none';
   document.getElementById('inputSection').style.display = 'block';
   document.getElementById('addNote').value = '';
+  switchTab('ir');
 }
 function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
 </script>
