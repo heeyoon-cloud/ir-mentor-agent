@@ -398,8 +398,9 @@ async function run() {
     document.getElementById('loadingMsg').textContent = '슬라이드 설계 중...';
     document.getElementById('loadingSub').textContent = '2/3 — IR Builder';
     const slidesRaw = await apiCall(SYS_SLIDES,
+    console.log("SLIDES_RAW:", slidesRaw);
       ctx + `\n\n[투자논리] ${state.analysis.thesisLabel}`);
-    state.slides = parsePipeSection(slidesRaw, 'SLIDES').map((f, i) => {
+    const _parsed = parsePipeSection(slidesRaw, "SLIDES"); console.log("PARSED_SLIDES:", _parsed); state.slides = _parsed.map((f, i) => {
       const factParts = (f[3] || '-').split(':');
       return {
         page: parseInt(f[0]) || i+1,
