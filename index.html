@@ -266,28 +266,38 @@ CONCERN_4: 투자자 우려
 CONCERN_5: 투자자 우려`;
 
 // ── 프롬프트 2: IR 슬라이드 ─────────────────────────────
-const SYS_SLIDES = `SparkLabs IR 멘토. VC 관점.
-[멘토 진단] 있으면 우선. 투자 논리 증명 순서로 배치. 10~12장. 문제→솔루션 직접 연결.
+const SYS_SLIDES = `VC 투자자 관점 SparkLabs IR 멘토.
+[멘토 진단] 우선. 투자 논리를 증명하는 순서로 슬라이드 배치. 10~12장.
 
-Fact 규칙: 숫자 있는 수치만. 없으면 missing:확인할것 형식.
-좋은예: growth:반복수주율82% / efficiency:리드타임3주(경쟁사6개월) / defense:전환비용6개월
+스토리 순서 원칙:
+1. cover → exec_summary → problem → solution 순서 반드시 유지
+2. problem과 solution은 1:1 직접 연결 필수
+3. traction은 moat 앞에 배치
+4. use_of_funds는 team 뒤에
 
-[SLIDES] 출력. 파이프(|) 구분. 6필드.
-page|type|claim|kpi:fact|interpretation|conclusion
-kpi: growth/efficiency/defense/missing. 없으면 -|-
-claim 20자이내. interpretation 20자이내. conclusion 15자이내.`;
+핵심 주장 원칙 (중요):
+- 투자자가 30초 안에 납득할 1문장
+- 좋은 예: "외부투자 없이 누적 40억·부채 제로 — 3인팀이 만든 증거"
+- 나쁜 예: "고객관계 기반 선제대응" (설명이지 주장이 아님)
 
-// ── 프롬프트 3: DD + VC Objections ──────────────────────
-const SYS_MENTOR = `SparkLabs IR 멘토. [멘토 진단] 있으면 우선 참고.
-아래 두 섹션 출력. 파이프(|) 구분. 다른 텍스트 없이.
+Fact 원칙: 반드시 숫자 포함. 없으면 missing:확인할내용
+좋은 예: growth:반복수주율82% / efficiency:택타임20배단축(경쟁사6개월) / defense:전환비용6개월
+나쁜 예: "LG와 협력" (숫자 없는 설명 금지)
 
-[DD_QUESTIONS]
-type|question|slide
-type: concern/verify/process. 8개. 중요도 순.
+type은 반드시 아래 중 하나만 사용:
+cover, exec_summary, problem, solution, customer_roi, technology, market, competitive, moat, traction, biz_model, revenue, gtm, global, roadmap, use_of_funds, team, milestones, ask
 
-[VC_OBJECTIONS]
-objection|answer
-투자자 날카로운 반박과 권장 답변. 5개.`;
+슬라이드 데이터만 출력. 설명·헤더·빈줄 없이.
+형식: 숫자|type|핵심주장|kpi:팩트|해석|결론
+kpi: growth/efficiency/defense/missing`;
+
+const SYS_MENTOR = `SparkLabs IR 멘토. [멘토 진단] 우선 참고.
+멘토링 세션 DD 질문 8~10개 생성.
+
+반드시 아래 형식으로만 출력. 다른 텍스트 없이.
+DD|type|질문내용|슬라이드번호
+type: concern(핵심리스크) / verify(수치검증) / process(프로세스이해)
+중요도 순.`;
 
 const SYS_UPDATE = `SparkLabs IR 멘토.
 기존 슬라이드 데이터(파이프 구분)와 추가 확인 내용으로 업데이트.
@@ -348,16 +358,22 @@ function parseKV(text) {
 }
 
 function parsePipeSection(text, section) {
-  const marker = '[' + section + ']';
-  const start = text.indexOf(marker);
-  if (start === -1) return [];
-  const rest = text.slice(start + marker.length);
-  const end = rest.search(/\n\[/);
-  const block = (end === -1 ? rest : rest.slice(0, end)).trim();
-  return block.split('\n')
-    .map(l => l.trim())
-    .filter(l => l && l.includes('|') && !l.match(/^[a-z_]+\|[a-z_]+/))
-    .map(l => l.split('|').map(f => f.trim()));
+  if (section === 'SLIDES') {
+    return text.split('\n').map(l => l.trim())
+      .filter(l => l && l.includes('|') && /^\d+\|/.test(l))
+      .map(l => l.split('|').map(f => f.trim()));
+  }
+  if (section === 'DD_QUESTIONS') {
+    return text.split('\n').map(l => l.trim())
+      .filter(l => l.startsWith('DD|'))
+      .map(l => l.slice(3).split('|').map(f => f.trim()));
+  }
+  if (section === 'VC_OBJECTIONS') {
+    return text.split('\n').map(l => l.trim())
+      .filter(l => l.startsWith('VC|'))
+      .map(l => l.slice(3).split('|').map(f => f.trim()));
+  }
+  return [];
 }
 
 async function run() {
